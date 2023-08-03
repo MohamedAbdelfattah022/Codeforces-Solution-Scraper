@@ -1,7 +1,7 @@
 # Codeforces Solution Scraper
 
 ## Description
-This project is a Python script that allows users to download their Codeforces submissions along with problem information. It uses Selenium to interact with the Codeforces website and fetches the accepted submissions of a user. The script saves the solutions to individual files and records problem information in a csv file.
+This project is a Python script that allows users to download their Codeforces Accepted submissions along with problem information. It uses Selenium to interact with the Codeforces website and fetches the accepted submissions of a user. The script saves the solutions to individual files and records problem information in a csv file.
 
 ## Requirements
 - Python
