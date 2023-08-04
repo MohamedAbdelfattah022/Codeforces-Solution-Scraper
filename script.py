@@ -167,6 +167,21 @@ def write_problem_info_to_file(problem_name, link, tags_list):
         print(f"Failed to write problem info for '{problem_name}' to file.")
 
 
+# uncomment this and comment the above function if you want to save the info just in a simple text file 
+# def write_problem_info_to_file(problem_name, link, tags_list):
+#     filename = 'problem_info.txt'
+#     with open(filename, 'a', encoding='utf-8') as info:
+#         try:
+#             info.write(problem_name + "\n")
+#             info.write(link + "\n")
+#             info.write("→ Problem tags\n")
+#             for tag in tags_list:
+#                 info.write(tag + "\n")
+#             info.write("--------------\n")
+#         except Exception as e:
+#             print(f"Failed to write problem info for '{problem_name}' to file.")
+
+
 def get_submission_links(driver):
     while True:
         try:
