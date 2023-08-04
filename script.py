@@ -73,7 +73,7 @@ def get_tags(driver, url, attempts=0):
         )
         problem_tags = [tag.text.strip() for tag in tag_elements]
         return problem_tags
-    except Exception as e:
+    except Exception:
         if attempts < 3:
             print(f"An error occurred while getting tags for URL: {url}. Refreshing the page and retrying.")
             driver.refresh()
@@ -93,7 +93,7 @@ def get_problem_name(driver, url, attempts=0):
         )
         name = title_element.text.strip()
         return re.sub(r'[\\/:*?"<>|]', '', name)
-    except Exception as e:
+    except Exception:
         if attempts < 3:
             print(f"An error occurred while getting problem name for URL: {url}. Refreshing the page and retrying.")
             driver.refresh()
@@ -121,7 +121,7 @@ def get_solution_code(driver, attempts=0):
         code = pyperclip.paste()
         code = code.replace("\r", "")
         return code
-    except Exception as e:
+    except Exception:
         if attempts < 3:
             print("An error occurred while getting solution code. Refreshing the page and retrying.")
             driver.refresh()
@@ -146,40 +146,44 @@ def write_solution_to_file(directory, problem_name, extension, link, solution):
             file.write("// " + link + "\n")
             file.write(solution)
             print(f"File '{problem_name}' created successfully in '{directory}' directory.")
-        except Exception as e:
+        except Exception:
             print(f"Failed to write solution for problem '{problem_name}' to file.")
 
 
-def write_problem_info_to_file(problem_name, link, tags_list):
+def is_csv_empty(filename):
+    return os.path.getsize(filename) == 0
+
+
+def write_problem_info_to_csv_file(problem_name, link, tags_list):
     filename = 'problem_info.csv'
     rating = None
-
-    if tags_list and tags_list[-1].isdigit():
-        rating = int(tags_list.pop())
-
+    if tags_list and tags_list[-1].strip().startswith('*') and tags_list[-1][1:].isdigit():
+        rating = int(tags_list.pop()[1:])
+    header = ["Problem Name", "Link", "Tags", "Rate"]
     try:
         with open(filename, 'a', newline='', encoding='utf-8') as info_file:
             csv_writer = csv.writer(info_file)
-            row_data = [problem_name, link] + tags_list + [rating]
-            csv_writer.writerow(row_data)
+            if is_csv_empty(filename):
+                csv_writer.writerow(header)
+            tags_str = ",".join(tags_list)
+            csv_writer.writerow([problem_name, link, tags_str, rating, ""])
         print(f"Problem info for '{problem_name}' written to '{filename}' successfully.")
     except Exception as e:
         print(f"Failed to write problem info for '{problem_name}' to file.")
 
 
-# uncomment this and comment the above function if you want to save the info just in a simple text file 
-# def write_problem_info_to_file(problem_name, link, tags_list):
-#     filename = 'problem_info.txt'
-#     with open(filename, 'a', encoding='utf-8') as info:
-#         try:
-#             info.write(problem_name + "\n")
-#             info.write(link + "\n")
-#             info.write("→ Problem tags\n")
-#             for tag in tags_list:
-#                 info.write(tag + "\n")
-#             info.write("--------------\n")
-#         except Exception as e:
-#             print(f"Failed to write problem info for '{problem_name}' to file.")
+def write_problem_info_to_text_file(problem_name, link, tags_list):
+    filename = 'problem_info.txt'
+    with open(filename, 'a', encoding='utf-8') as info:
+        try:
+            info.write(problem_name + "\n")
+            info.write(link + "\n")
+            info.write("→ Problem tags\n")
+            for tag in tags_list:
+                info.write(tag + "\n")
+            info.write("--------------\n")
+        except Exception as e:
+            print(f"Failed to write problem info for '{problem_name}' to file.")
 
 
 def get_submission_links(driver):
@@ -237,8 +241,9 @@ def main():
             print(problem_name)
             solution = get_solution_code(driver)
 
+            write_problem_info_to_csv_file(problem_name, link, tags_list)
+            # write_problem_info_to_text_file(problem_name, link, tags_list)
             write_solution_to_file(directory, problem_name, extension, link, solution)
-            write_problem_info_to_file(problem_name, link, tags_list)
 
     print("Task Completed")
     time.sleep(3)
