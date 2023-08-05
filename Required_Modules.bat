@@ -2,7 +2,7 @@
 
 echo Installing required Python modules...
 
-pip install selenium pyperclip
+pip install selenium pyperclip webdriver-manager
 
 echo Installation complete.
 
