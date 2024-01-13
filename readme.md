@@ -13,9 +13,6 @@ This project is a Python script that allows users to download their Codeforces A
 - Double-click the `Required_Modules.bat` batch file in the project directory. This batch file will install the required Python modules.
 - If there is an installation error, try running the batch file using a virtual environment and then retry installing the modules.
 
-## Inspiration
-This project is inspired by the repository created by [Mohak](https://github.com/mohakkhowal/CFdownloader) thanks to him.
-
 ## How to Use
 - Open the script in your IDE or text editor and run the script.
 
